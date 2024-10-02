@@ -80,3 +80,12 @@ def test_delete_message(client):
     rv = client.get('/delete/1')
     data = json.loads(rv.data)
     assert data["status"] == 1
+
+def test_search_empty_query(client):
+    # pass an empty query
+    response = client.get('/search/')
+    assert response.status_code == 200
+    # Since no query was passed, ensure no query is in the response
+    assert b'' in response.data
+    assert b'abcdefgh' not in response.data
+    
