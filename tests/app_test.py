@@ -85,7 +85,5 @@ def test_search_empty_query(client):
     # pass an empty query
     response = client.get('/search/')
     assert response.status_code == 200
-    # Since no query was passed, ensure no query is in the response
     assert b'' in response.data
     assert b'abcdefgh' not in response.data
-    
