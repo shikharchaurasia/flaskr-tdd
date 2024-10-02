@@ -1,4 +1,3 @@
-import os
 import pytest
 from pathlib import Path
 import json
@@ -19,6 +18,7 @@ def client():
         db.create_all()  # setup
         yield app.test_client()  # tests run here
         db.drop_all()  # teardown
+
 
 def login(client, username, password):
     """Login helper function"""
@@ -75,6 +75,7 @@ def test_messages(client):
     assert b"&lt;Hello&gt;" in rv.data
     assert b"<strong>HTML</strong> allowed here" in rv.data
 
+
 def test_delete_message(client):
     """Ensure the messages are being deleted"""
     rv = client.get("/delete/1")
@@ -85,9 +86,10 @@ def test_delete_message(client):
     data = json.loads(rv.data)
     assert data["status"] == 1
 
+
 def test_search_empty_query(client):
     # pass an empty query
-    response = client.get('/search/')
+    response = client.get("/search/")
     assert response.status_code == 200
-    assert b'' in response.data
-    assert b'abcdefgh' not in response.data
+    assert b"" in response.data
+    assert b"abcdefgh" not in response.data
