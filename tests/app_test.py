@@ -93,3 +93,26 @@ def test_search_empty_query(client):
     assert response.status_code == 200
     assert b"" in response.data
     assert b"abcdefgh" not in response.data
+
+# Checked documentation to access individual attributes of response.
+def test_delete_entry_unauthorized(client):
+    response = client.get('/delete/1')
+    assert response.status_code == 401
+
+    json_data = response.get_json()
+    assert json_data['status'] == 0
+
+
+# note: https://stackoverflow.com/questions/20419228/flask-login-check-if-user-is-authenticated-without-decorator#:~:text=At%20the%20same%20time%2C%20you,of%20session%5B'logged_in'%5D%20.
+# Used this thread to manually set logged_in to true to enforce a positive test case.
+def test_delete_entry_authorized(client):
+    with client.session_transaction() as session:
+        session['logged_in'] = True
+
+    response = client.get('/delete/1')
+    assert response.status_code == 200
+
+    json_data = response.get_json()
+    assert json_data['status'] == 1
+    assert json_data['message'] == 'Post Deleted'
+
